@@ -79,18 +79,25 @@ main() {
   mv -f ~/.zshrc-omztemp ~/.zshrc
 
   # If this user's login shell is not already "zsh", attempt to switch.
-  TEST_CURRENT_SHELL=$(basename "$SHELL")
-  if [ "$TEST_CURRENT_SHELL" != "zsh" ]; then
-    # If this platform provides a "chsh" command (not Cygwin), do it, man!
-    if hash chsh >/dev/null 2>&1; then
-      printf "${BLUE}Time to change your default shell to zsh!${NORMAL}\n"
-      chsh -s $(grep /zsh$ /etc/shells | tail -1)
-    # Else, suggest the user do so manually.
-    else
-      printf "I can't change your shell automatically because this system does not have chsh.\n"
-      printf "${BLUE}Please manually change your default shell to zsh!${NORMAL}\n"
+  # Skip this if --skip-chsh is passed as the first argument
+  if [ "$1" == "--skip-chsh" ]; then
+    printf "Skipping change of user's shell to zsh. You can change it yourself by running:"
+    printf "chsh -s $(grep /zsh$ /etc/shells | tail -1)"
+  else
+    TEST_CURRENT_SHELL=$(basename "$SHELL")
+    if [ "$TEST_CURRENT_SHELL" != "zsh" ]; then
+      # If this platform provides a "chsh" command (not Cygwin), do it, man!
+      if hash chsh >/dev/null 2>&1; then
+        printf "${BLUE}Time to change your default shell to zsh!${NORMAL}\n"
+        chsh -s $(grep /zsh$ /etc/shells | tail -1)
+      # Else, suggest the user do so manually.
+      else
+        printf "I can't change your shell automatically because this system does not have chsh.\n"
+        printf "${BLUE}Please manually change your default shell to zsh!${NORMAL}\n"
+      fi
     fi
   fi
+  
 
   printf "${GREEN}"
   echo '         __                                     __   '
@@ -108,7 +115,7 @@ main() {
   echo 'p.p.s. Get stickers, shirts, and coffee mugs at https://shop.planetargon.com/collections/oh-my-zsh.'
   echo ''
   printf "${NORMAL}"
-  if [ "$1" == "--silent" ]; then
+  if [ "$2" == "--silent" ]; then
     printf "Skipping launch of zsh shell. You can launch it yourself or restart your terminal."
   else
     env zsh -l
