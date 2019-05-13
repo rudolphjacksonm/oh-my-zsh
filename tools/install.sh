@@ -80,7 +80,7 @@ main() {
 
   # If this user's login shell is not already "zsh", attempt to switch.
   # Skip this if --skip-chsh is passed as the first argument
-  if [ "$1" == "--skip-chsh" ]; then
+  if [ "$2" == "--skip-chsh" ]; then
     printf "Skipping change of user's shell to zsh. You can change it yourself by running:"
     printf "chsh -s $(grep /zsh$ /etc/shells | tail -1)"
   else
@@ -115,7 +115,7 @@ main() {
   echo 'p.p.s. Get stickers, shirts, and coffee mugs at https://shop.planetargon.com/collections/oh-my-zsh.'
   echo ''
   printf "${NORMAL}"
-  if [ "$2" == "--silent" ]; then
+  if [ "$1" == "--silent" ]; then
     printf "Skipping launch of zsh shell. You can launch it yourself or restart your terminal."
   else
     env zsh -l
